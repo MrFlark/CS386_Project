@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h2>index</h2>
+
+<textarea rows="10" cols="60" id="request_body"></textarea>
+<input type="submit" id="btn_send_request"/>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $("#btn_send_request").click(function(){
+            var request_text = $("#request_body").val();
+            var request_body = $.parseJSON(request_text);
+            $.ajax({
+                url: "http://localhost:4613/Data/Test",
+                type: 'post',
+                data: request_body,
+                success: function(response){
+                    alert(JSON.stringify(response));
+                },
+                error: function(response){
+                    console.log(response);
+                }
+            });
+        });
+    });
+</script>
