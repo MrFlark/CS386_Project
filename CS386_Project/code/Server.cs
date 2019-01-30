@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using System.IO;
+using CS386_Project.code.ResponseModels;
 
 namespace CS386_Project.code
 {
@@ -38,6 +40,32 @@ namespace CS386_Project.code
             return null;
         }
 
+        public static void StreamAudio(Guid clientId, string localPath){
+
+            var client = FindClient(clientId).ClientRef;
+            if(client == null){
+                //todo error
+            }
+
+            var stream = client.GetStream();
+
+            while (!stream.DataAvailable);
+
+            var bytes = File.ReadAllBytes(localPath);
+
+            stream.Write(bytes, 0, bytes.Length);
+            stream.Flush();
+
+            var responseBytes = new byte[client.Available];
+            stream.Read(responseBytes, 0, responseBytes.Length);
+            var responseString = Encoding.UTF8.GetString(responseBytes);
+            var response = JsonConvert.DeserializeObject<ClientStreamResponse>(responseString);
+
+            if(!response.Success){
+                //todo error
+            }
+        }
+
         public static void AcceptNewClient(string privateKey, Guid sessionId){
             new Thread(t => {
                
@@ -67,7 +95,7 @@ namespace CS386_Project.code
                     stream.Read(clientResponse, 0, clientResponse.Length);
 
                     var clientResponseStr = Encoding.UTF8.GetString(clientResponse);
-                    var clientResponseObject = JsonConvert.DeserializeObject<ClientResponse>(clientResponseStr);
+                    var clientResponseObject = JsonConvert.DeserializeObject<ClientHandshakeResponse>(clientResponseStr);
 
                     if(clientResponseObject.PrivateKey != privateKey){
                         //todo error

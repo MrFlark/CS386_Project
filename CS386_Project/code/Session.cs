@@ -10,9 +10,5 @@ namespace CS386_Project.code
         public List<Client> Clients { get; set; }
         public string Password { get; set; }
         public string Name { get; set; }
-
-        public Session()
-        {
-        }
     }
 }
