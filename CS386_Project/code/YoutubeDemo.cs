@@ -13,21 +13,29 @@ namespace CS386_Project.code
     {
         public static string GetMP3FromURL(string url)
         {
-            var youtube = YouTube.Default;
-            var vid = youtube.GetVideo(url);
-            File.WriteAllBytes(Server.TEMP_DIR + vid.FullName, vid.GetBytes());
-
-            var inputFile = new MediaFile { Filename = Server.TEMP_DIR + vid.FullName };
-            var outputFile = new MediaFile { Filename = $"{Server.TEMP_DIR + vid.FullName}.mp3" };
-
-            using (var engine = new Engine())
+            try
             {
-                engine.GetMetadata(inputFile);
+                var youtube = YouTube.Default;
+                var vid = youtube.GetVideo(url);
+                File.WriteAllBytes(Server.TEMP_DIR + vid.FullName, vid.GetBytes());
 
-                engine.Convert(inputFile, outputFile);
+                var inputFile = new MediaFile { Filename = Server.TEMP_DIR + vid.FullName };
+                var outputFile = new MediaFile { Filename = $"{Server.TEMP_DIR + vid.FullName}.mp3" };
+
+                using (var engine = new Engine())
+                {
+                    engine.GetMetadata(inputFile);
+
+                    engine.Convert(inputFile, outputFile);
+                }
+
+                return outputFile.Filename;
             }
-
-            return outputFile.Filename;
+            catch (Exception e)
+            {
+                File.WriteAllText(@"C:\CS386_Project\temp\test.txt", e.Message);
+                return "";
+            }
         }
     }
 }
