@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CS386_Project.code;
@@ -15,6 +16,19 @@ namespace CS386_Project.Controllers
             {
                 value = param
             });
+        }
+
+        [HttpPost]
+        public FileResult GetMP3(string url)
+        {
+            var mp3path = YoutubeDemo.GetMP3FromURL(url);
+            var info = new FileInfo(mp3path);
+            return File(info.OpenRead(), "audio/mpeg");
+        }
+
+        public ActionResult YoutubeDL()
+        {
+            return View();
         }
 
         [HttpPost]

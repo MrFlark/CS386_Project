@@ -12,7 +12,7 @@ namespace CS386_Project.code
 {
     public class Server
     {
-        public static readonly string TEMP_DIR = @"temp\\";
+        public static readonly string TEMP_DIR = @"C:\CS386_Project\temp\";
 
         public static readonly int PORT = 1234;
         public static readonly string SERVER_ADDRESS = "127.0.0.1";
