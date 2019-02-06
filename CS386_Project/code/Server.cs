@@ -12,7 +12,8 @@ namespace CS386_Project.code
 {
     public class Server
     {
-        
+        public static readonly string TEMP_DIR = @"temp\\";
+
         public static readonly int PORT = 1234;
         public static readonly string SERVER_ADDRESS = "127.0.0.1";
         public static readonly int CLIENT_TIMEOUT_MS = 30 * 1000;//30 second timeout

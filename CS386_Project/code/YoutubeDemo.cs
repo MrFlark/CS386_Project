@@ -1,0 +1,31 @@
+﻿using MediaToolkit;
+using MediaToolkit.Model;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using VideoLibrary;
+
+namespace CS386_Project.code
+{
+    public class YoutubeDemo
+    {
+        public static void GetMP3FromURL(string url)
+        {
+            var youtube = YouTube.Default;
+            var vid = youtube.GetVideo(url);
+            File.WriteAllBytes(Server.TEMP_DIR + "temp", vid.GetBytes());
+
+            var inputFile = new MediaFile { Filename = Server.TEMP_DIR + vid.FullName };
+            var outputFile = new MediaFile { Filename = $"{Server.TEMP_DIR + vid.FullName}.mp3" };
+
+            using (var engine = new Engine())
+            {
+                engine.GetMetadata(inputFile);
+
+                engine.Convert(inputFile, outputFile);
+            }
+        }
+    }
+}

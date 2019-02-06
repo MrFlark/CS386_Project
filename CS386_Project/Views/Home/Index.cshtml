@@ -16,7 +16,7 @@
             var request_text = $("#request_body").val();
             var request_body = $.parseJSON(request_text);
             $.ajax({
-                url: "http://localhost:4613/Data/Test",
+                url: "http://josephsirna.org/CS386/Data/Test",
                 type: 'post',
                 data: request_body,
                 success: function(response){

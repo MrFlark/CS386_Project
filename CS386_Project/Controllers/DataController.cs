@@ -9,6 +9,14 @@ namespace CS386_Project.Controllers
 {
     public class DataController : Controller
     {
+        public JsonResult Test(string param)
+        {
+            return Json(new
+            {
+                value = param
+            });
+        }
+
         [HttpPost]
         public JsonResult QueueSong(string clientId, string source, string url = "")
         {
@@ -31,7 +39,8 @@ namespace CS386_Project.Controllers
         [HttpPost]
         public JsonResult JoinSession(string sessionId, string password)
         {
-            var client = new Client() {
+            var client = new Client()
+            {
                 ClientRef = null,
                 ClientId = Guid.NewGuid(),
 
@@ -46,9 +55,11 @@ namespace CS386_Project.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateSession(string name, bool hasPassword, string password = null){
+        public JsonResult CreateSession(string name, bool hasPassword, string password = null)
+        {
 
-            var session = new Session(){
+            var session = new Session()
+            {
                 SessionId = Guid.NewGuid(),
                 Clients = new List<Client>(),
                 Password = password,
@@ -60,7 +71,8 @@ namespace CS386_Project.Controllers
             var privateKey = Guid.NewGuid().ToString();
             Server.AcceptNewClient(privateKey, session.SessionId);
 
-            return Json(new {
+            return Json(new
+            {
                 StatusCode = 200,
                 Message = "created session with id: " + session.SessionId,
                 PrivateKey = privateKey
@@ -72,8 +84,10 @@ namespace CS386_Project.Controllers
         {
             var _sessionList = new List<object>();
 
-            foreach(var session in Server.Sessions){
-                if(session != null){
+            foreach (var session in Server.Sessions)
+            {
+                if (session != null)
+                {
                     _sessionList.Add(new
                     {
                         SessionId = session.SessionId,
