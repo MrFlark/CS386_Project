@@ -5,7 +5,20 @@
 
 <h2>YoutubeDL</h2>
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
 <form action="GetMP3" method="post">
     <input type="text" placeholder="url" name="url" id="url" />
     <input type="submit" value="download mp3" />
 </form>
+
+<div id="test2">test2</div>
+<input id="url2" type="text" />
+<div id="btn" style="cursor:pointer;">test</div>
+<script>
+    $("#btn").click(function () {
+        $("#test2").html("<embed src='http://josephsirna.org:81/dev/Data/GetMP3_GET?url="+$("#url2").val()+"'>");
+    });
+</script>

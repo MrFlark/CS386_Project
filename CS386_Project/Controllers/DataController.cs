@@ -26,6 +26,14 @@ namespace CS386_Project.Controllers
             return File(info.OpenRead(), "audio/x-wave");
         }
 
+        [HttpGet]
+        public FileResult GetMP3_GET(string url)
+        {
+            var mp3path = YoutubeDemo.GetMP3FromURL(url);
+            var info = new FileInfo(mp3path);
+            return File(info.OpenRead(), "audio/x-wave");
+        }
+
         public ActionResult YoutubeDL()
         {
             return View();
