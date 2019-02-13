@@ -23,7 +23,7 @@ namespace CS386_Project.Controllers
         {
             var mp3path = YoutubeDemo.GetMP3FromURL(url);
             var info = new FileInfo(mp3path);
-            return File(info.OpenRead(), "audio/mpeg");
+            return File(info.OpenRead(), "audio/x-wave");
         }
 
         public ActionResult YoutubeDL()

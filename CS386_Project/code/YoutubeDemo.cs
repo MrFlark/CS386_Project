@@ -20,7 +20,7 @@ namespace CS386_Project.code
                 File.WriteAllBytes(Server.TEMP_DIR + vid.FullName, vid.GetBytes());
 
                 var inputFile = new MediaFile { Filename = Server.TEMP_DIR + vid.FullName };
-                var outputFile = new MediaFile { Filename = $"{Server.TEMP_DIR + vid.FullName}.mp3" };
+                var outputFile = new MediaFile { Filename = $"{Server.TEMP_DIR + vid.FullName}.wav" };
 
                 using (var engine = new Engine())
                 {
