@@ -25,7 +25,6 @@ namespace CS386_Project.code
                 using (var engine = new Engine())
                 {
                     engine.GetMetadata(inputFile);
-
                     engine.Convert(inputFile, outputFile);
                 }
 

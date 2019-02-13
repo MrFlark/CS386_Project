@@ -51,24 +51,28 @@ namespace CS386_Project.Controllers
 
             }
 
+            var _songs = new List<object>();
+
             return Json(new
             {
                 StatusCode = 200,
-                Message = "queued song successfully"
+                Message = "queued song successfully",
+                Songs = _songs,//todo
+                Position = 1
             });
         }
 
         [HttpPost]
-        public JsonResult JoinSession(string sessionId, string name, string password)
+        public JsonResult JoinSession(string SessionId, string DisplayName, string Password)
         {
-            if(string.IsNullOrWhiteSpace(name)){
+            if(string.IsNullOrWhiteSpace(DisplayName)){
                 //todo error
             }
 
             var client = new Client() {
                 ClientRef = null,
                 ClientId = Guid.NewGuid(),
-                Name = name
+                Name = DisplayName
             };
 
             return Json(new
@@ -80,15 +84,15 @@ namespace CS386_Project.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateSession(string name, bool hasPassword, string password = null)
+        public JsonResult CreateSession(string Name, string Password = null, string DisplayName)
         {
 
             var session = new Session()
             {
                 SessionId = Guid.NewGuid(),
                 Clients = new List<Client>(),
-                Password = password,
-                Name = name
+                Password = Password,
+                Name = Name
             };
 
             Server.Sessions.Add(session);
@@ -118,7 +122,7 @@ namespace CS386_Project.Controllers
                         SessionId = session.SessionId,
                         Name = session.Name,
                         ClientCount = session.Clients.Count,
-                        hasPassword = session.Password != null
+                        HasPassword = session.Password != null
                     });
                 }
             }
