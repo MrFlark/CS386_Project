@@ -33,7 +33,7 @@ namespace CS386_Project.code
             }
             catch (Exception e)
             {
-                File.WriteAllText(@"C:\CS386_Project\temp\test.txt", e.Message);
+                File.WriteAllText(@"test.txt", e.Message);
                 return "";
             }
         }

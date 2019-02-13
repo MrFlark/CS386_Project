@@ -5,7 +5,6 @@ namespace CS386_Project.code
 {
     public class Session
     {
-
         public Guid SessionId { get; set; }
         public List<Client> Clients { get; set; }
         public string Password { get; set; }

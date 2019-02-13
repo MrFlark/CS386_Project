@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,13 +59,16 @@ namespace CS386_Project.Controllers
         }
 
         [HttpPost]
-        public JsonResult JoinSession(string sessionId, string password)
+        public JsonResult JoinSession(string sessionId, string name, string password)
         {
-            var client = new Client()
-            {
+            if(string.IsNullOrWhiteSpace(name)){
+                //todo error
+            }
+
+            var client = new Client() {
                 ClientRef = null,
                 ClientId = Guid.NewGuid(),
-
+                Name = name
             };
 
             return Json(new

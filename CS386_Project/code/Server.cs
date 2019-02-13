@@ -12,7 +12,7 @@ namespace CS386_Project.code
 {
     public class Server
     {
-        public static readonly string TEMP_DIR = @"C:\CS386_Project\temp\";
+        public static readonly string TEMP_DIR = @"\";
 
         public static readonly int PORT = 1234;
         public static readonly string SERVER_ADDRESS = "127.0.0.1";
@@ -50,7 +50,9 @@ namespace CS386_Project.code
 
             var stream = client.GetStream();
 
-            while (!stream.DataAvailable);
+            while (!stream.DataAvailable){
+                //wait
+            }
 
             var bytes = File.ReadAllBytes(localPath);
 
@@ -79,7 +81,6 @@ namespace CS386_Project.code
                     var stream = client.GetStream();
 
                     //write welcome message to client
-
                     var responseObject = new {
                         Message = "[welcome message here]"
                     };
@@ -89,8 +90,9 @@ namespace CS386_Project.code
                     stream.Flush();
 
                     //wait for response
-                    while (!stream.DataAvailable);
-
+                    while (!stream.DataAvailable){
+                        //wait
+                    }
 
                     var clientResponse = new byte[client.Available];
                     stream.Read(clientResponse, 0, clientResponse.Length);
