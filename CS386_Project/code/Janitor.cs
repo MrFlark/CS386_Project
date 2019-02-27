@@ -41,22 +41,25 @@ namespace CS386_Project.code
                 }
             }
 
-            //iterate throguh all queued songs.
-            //if a played song is queued, do not add it to the toDelete list
-            var toDelete = new List<Song>();
+            var allQueuedSongURLs = new List<string>();
             foreach (var session in Server.Sessions)
             {
                 foreach (var song in session.Queue.Songs)
                 {
-                    var url = song.Location.URL.ToLower().Trim();
-                    //search for this URL in the list of songs marked for deletion
-                    foreach (var playedSong in playedSongs)
-                    {
-                        if (playedSong.Location.URL.ToLower().Trim() != url)
-                        {
-                            toDelete.Add(playedSong);
-                        }
-                    }
+                    var normalizedURL = song.Location.URL.ToLower().Trim();
+                    allQueuedSongURLs.Add(normalizedURL);
+                }
+            }
+
+            //iterate throguh all queued song URLs
+            //if a played song is queued, do not add it to the toDelete list
+            var toDelete = new List<Song>();
+            foreach (var s in playedSongs)
+            {
+                var normalizedURL = s.Location.URL.ToLower().Trim();
+                if(!allQueuedSongURLs.Contains(normalizedURL))
+                {
+                    toDelete.Add(s);
                 }
             }
 

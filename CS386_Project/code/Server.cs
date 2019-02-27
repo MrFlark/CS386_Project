@@ -41,6 +41,16 @@ namespace CS386_Project.code
             return null;
         }
 
+        public static string NormalizeURL(string url)
+        {
+            if(url.IndexOf("?", StringComparison.InvariantCulture) != -1)
+            {
+                url = url.Substring(0, url.IndexOf("?", StringComparison.InvariantCulture));
+            }
+
+            return url.ToLower().Trim();
+        }
+
         public static void StreamAudio(Guid clientId, string localPath){
 
             var client = FindClient(clientId).ClientRef;
