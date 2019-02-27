@@ -24,4 +24,7 @@
     <Folder Include="code\" />
     <Folder Include="code\ResponseModels\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="code\YoutubeDemo.cs" />
+  </ItemGroup>
 </Project>

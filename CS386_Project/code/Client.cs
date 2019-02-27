@@ -10,5 +10,6 @@ namespace CS386_Project.code
         public string InetAddress { get; set; }
         public TcpClient ClientRef { get; set; }
         public string Name { get; set; }
+        public Guid SessionId { get; set; }
     }
 }

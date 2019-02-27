@@ -18,22 +18,6 @@ namespace CS386_Project.Controllers
             });
         }
 
-        [HttpPost]
-        public FileResult GetMP3(string url)
-        {
-            var mp3path = YoutubeDemo.GetMP3FromURL(url);
-            var info = new FileInfo(mp3path);
-            return File(info.OpenRead(), "audio/x-wave");
-        }
-
-        [HttpGet]
-        public FileResult GetMP3_GET(string url)
-        {
-            var mp3path = YoutubeDemo.GetMP3FromURL(url);
-            var info = new FileInfo(mp3path);
-            return File(info.OpenRead(), "audio/x-wave");
-        }
-
         public ActionResult YoutubeDL()
         {
             return View();
@@ -42,37 +26,72 @@ namespace CS386_Project.Controllers
         [HttpPost]
         public JsonResult QueueSong(string clientId, string source, string url = "")
         {
-            if (source == "youtube")
+            Source s = Source.UNDEFINED;
+            var sourcesDictionary = new Dictionary<string, Source>() {
+                { "youtube", Source.YouTube },
+                { "spotify", Source.Spotify }
+            };
+
+            var normalizedSource = source.ToLower().Trim();
+            if(!sourcesDictionary.ContainsKey(normalizedSource))
             {
-
+                //todo error (bad source parameter)
             }
-            else if (source == "spotify")
+
+            s = sourcesDictionary[normalizedSource];
+
+            var song = new Song()
             {
+                Source = s,
+                Name = null,//to be populated later in RequestManager.LoadSongData
+                RequestTimeStamp = DateTime.Now,
+                Location = new Location
+                {
+                    URL = url,
+                    Filepath = null
+                },
+                Id = Guid.NewGuid(),
+                HasBeenDownloaded = false
+            };
 
-            }
-
-            var _songs = new List<object>();
 
             return Json(new
             {
                 StatusCode = 200,
                 Message = "queued song successfully",
-                Songs = _songs,//todo
+                Songs = new List<object>(),//todo
                 Position = 1
             });
         }
 
         [HttpPost]
-        public JsonResult JoinSession(string SessionId, string DisplayName, string Password)
+        public JsonResult JoinSession(string DisplayName, string Password)
         {
-            if(string.IsNullOrWhiteSpace(DisplayName)){
+            if (string.IsNullOrWhiteSpace(DisplayName))
+            {
                 //todo error
             }
 
-            var client = new Client() {
+            Session sessionToJoin = null;
+            foreach (var s in Server.Sessions)
+            {
+                if (s.Password == Password)
+                {
+                    sessionToJoin = s;
+                }
+            }
+
+            if (sessionToJoin == null)
+            {
+                //todo error (bad password / invalid join key)
+            }
+
+            var client = new Client()
+            {
                 ClientRef = null,
                 ClientId = Guid.NewGuid(),
-                Name = DisplayName
+                Name = DisplayName,
+                SessionId = sessionToJoin.SessionId
             };
 
             return Json(new
@@ -84,7 +103,7 @@ namespace CS386_Project.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateSession(string Name, string Password = null, string DisplayName)
+        public JsonResult CreateSession(string Name, string DisplayName, string Password = null)
         {
 
             var session = new Session()
