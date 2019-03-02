@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using CS386_Project.code;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,9 @@ namespace CS386_Project
         public static void Main(string[] args)
         {
             BuildWebHost(args).Run();
+            new Thread(t => {
+                Server.StartServer();
+            }).Start();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace CS386_Project.code
 {
-    public class Janitor
+    public class CleanupManager
     {
         public static bool TryRemoveFile(string filepath)
         {

@@ -21,7 +21,6 @@
     <Content Remove="Views\Home\About.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="code\" />
     <Folder Include="code\ResponseModels\" />
   </ItemGroup>
   <ItemGroup>
