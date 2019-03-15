@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "ManualTest";
+}
+
+<h2>ManualTest</h2>
+
+<style>
+    body, textarea {
+        display: block;
+    }
+
+    a {
+        cursor: pointer;
+        border: 1px solid red;
+        display: inline-block;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+
+<!--create session-->
+<textarea rows="10" cols="50" id="rq0"></textarea>
+
+<a id="btn1">test</a>
+
+<!--OR-->
+<!--join session-->
+<textarea rows="10" cols="50" id="rq1"></textarea>
+
+song URL:
+<textarea rows="1" cols="65" id="rq2"></textarea>
+<a id="btn2">queue song</a>
+<br />
+<textarea rows="10" cols="65" id="rq4"></textarea>
+<br />
+
+songs List:
+<textarea rows="10" cols="50" id="rq3"></textarea>
+
+<audio id="audio_tag" controls>
+    <source id="audio_source" src="_" type="audio/mpeg">
+</audio>
+
+<script>
+
+    var sessionId = "";
+    var clientId = "";
+
+    function getNextSong() {
+        $.ajax({
+            url: "http://localhost:4614/Data/GetSongList",
+            type: 'post',
+            data: {
+                'sessionId': sessionId
+            },
+            success: function (r) {
+                var songs = r.songs;
+                if (songs.length > 0) {
+                    var songId = songs[0].id;
+
+                    $("#audio_source").attr('src', 'http://localhost:4614/Data/GetSong?SongId=' + songId);
+
+                    var audio_tag = document.getElementById('audio_tag');
+                    audio_tag.load();
+                    audio_tag.play();
+                }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
+
+    function getSongList() {
+        $.ajax({
+            url: "http://localhost:4614/Data/GetSongList",
+            type: 'post',
+            data: {
+                'sessionId': sessionId
+            },
+            success: function (r) {
+                $("#rq3").val(JSON.stringify(r, null, 2));
+
+                getNextSong();
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
+
+    function getSessionList() {
+        $.ajax({
+            url: "http://localhost:4614/Data/GetSessionList",
+            type: 'post',
+            success: function (r) {
+                $("#rq1").val(JSON.stringify(r, null, 2));
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    }
+
+    var rq0 = {
+        "Name": "session name",
+        "DisplayName": "display name"
+    };
+
+    $("#btn2").click(function () {
+        var url = $("#rq2").val();
+        $.ajax({
+            url: "http://localhost:4614/Data/QueueSong",
+            data: {
+                'clientId': clientId,
+                'source': 'youtube',
+                'url': url
+            },
+            type: "post",
+            success: function (r) {
+                $("#rq4").val(JSON.stringify(r, null, 2));
+
+                getSongList();
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    });
+
+    $("#btn1").click(function () {
+        $.ajax({
+            url: "http://localhost:4614/Data/CreateSession",
+            data: rq0,
+            type: "post",
+            success: function (r) {
+                $("#rq0").val(JSON.stringify(r, null, 2));
+
+                console.log("ClientId=" + r.clientId);
+
+                sessionId = r.sessionId
+                clientId = r.clientId;
+
+                getSessionList();
+
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+
+    });
+
+
+
+    var rq1 = {
+
+    };
+
+    var rq2 = {};
+
+    var rq3 = {};
+</script>

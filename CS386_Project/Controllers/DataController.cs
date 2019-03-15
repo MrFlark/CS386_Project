@@ -10,17 +10,76 @@ namespace CS386_Project.Controllers
 {
     public class DataController : Controller
     {
-        public JsonResult Test(string param)
-        {
-            return Json(new
-            {
-                value = param
-            });
-        }
 
-        public ActionResult YoutubeDL()
+        public ActionResult ManualTest()
         {
             return View();
+        }
+
+        public FileResult GetSong(string songId)
+        {
+
+            if (!Guid.TryParse(songId, out Guid songGuid))
+            {
+                Response.StatusCode = 500;
+                Response.Headers.Add("ErrorMsg", "Invalid value for parameter songId");
+                return null;
+            }
+
+            foreach (var session in Server.Sessions)
+            {
+                foreach (var song in session.Queue.Songs)
+                {
+                    if (song.Id == songGuid)
+                    {
+
+                        //return file
+                        if (song.HasBeenDownloaded)
+                        {
+                            var fi = new FileInfo(song.Location.Filepath);
+                            if (fi.Exists)
+                            {
+                                return File(fi.OpenRead(), "audio/mpeg");
+                            }
+                            else
+                            {
+                                Response.StatusCode = 500;
+                                Response.Headers.Add("ErrorMsg", "Song was marked as downloaded but the file did not exist");
+                                return null;
+                            }
+                        }
+                        else
+                        {
+                            //download the song now
+                            if (song.Source == Source.YouTube)
+                            {
+                                song.Location.Filepath = RequestManager.GetMP3FromURL(song.Location.URL);
+                                song.HasBeenDownloaded = true;
+
+                                var fi = new FileInfo(song.Location.Filepath);
+                                if (fi.Exists)
+                                {
+                                    return File(fi.OpenRead(), "audio/mpeg");
+                                }
+                                else
+                                {
+                                    Response.StatusCode = 500;
+                                    Response.Headers.Add("ErrorMsg", "Song was marked as downloaded but the file did not exist");
+                                    return null;
+                                }
+                            }
+                            else
+                            {
+                                Response.StatusCode = 500;
+                                Response.Headers.Add("ErrorMsg", "On-Demand downloading of spotify songs is not yet supported");
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         [HttpPost]
@@ -33,12 +92,56 @@ namespace CS386_Project.Controllers
             };
 
             var normalizedSource = source.ToLower().Trim();
-            if(!sourcesDictionary.ContainsKey(normalizedSource))
+            if (!sourcesDictionary.ContainsKey(normalizedSource))
             {
-                //todo error (bad source parameter)
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "invalid value '" + source + "'  for parameter 'source'"
+                });
+            }
+
+            if (!Guid.TryParse(clientId, out Guid parsedClientId))
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "invalid clientId (unable to parse)"
+                });
             }
 
             s = sourcesDictionary[normalizedSource];
+
+            var client = Server.FindClient(parsedClientId);
+            if (client == null)
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "unable to find client"
+                });
+            }
+
+            var query = Server.Sessions.ToList().Where(_session => _session.SessionId == client.SessionId);
+            if (!query.Any())
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "unable to find session with SessionId=" + client.SessionId.ToString()
+                });
+            }
+
+            if (query.Count() > 1)
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "more than 1 session with SessionId=" + client.SessionId.ToString()
+                });
+            }
+
+            var session = query.FirstOrDefault();
 
             var song = new Song()
             {
@@ -54,12 +157,13 @@ namespace CS386_Project.Controllers
                 HasBeenDownloaded = false
             };
 
+            session.Queue.Songs.Add(song);
 
             return Json(new
             {
                 StatusCode = 200,
                 Message = "queued song successfully",
-                Songs = new List<object>(),//todo
+                Songs = session.Queue.Songs,
                 Position = 1
             });
         }
@@ -69,7 +173,11 @@ namespace CS386_Project.Controllers
         {
             if (string.IsNullOrWhiteSpace(DisplayName))
             {
-                //todo error
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "invalid value for parameter 'DisplayName'"
+                });
             }
 
             Session sessionToJoin = null;
@@ -83,12 +191,15 @@ namespace CS386_Project.Controllers
 
             if (sessionToJoin == null)
             {
-                //todo error (bad password / invalid join key)
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "bad password/invalid join key"
+                });
             }
 
             var client = new Client()
             {
-                ClientRef = null,
                 ClientId = Guid.NewGuid(),
                 Name = DisplayName,
                 SessionId = sessionToJoin.SessionId
@@ -106,6 +217,24 @@ namespace CS386_Project.Controllers
         public JsonResult CreateSession(string Name, string DisplayName, string Password = null)
         {
 
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "invalid value for parameter 'Name'"
+                });
+            }
+
+            if (string.IsNullOrWhiteSpace(DisplayName))
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "invalid value for parameter 'DisplayName'"
+                });
+            }
+
             var session = new Session()
             {
                 SessionId = Guid.NewGuid(),
@@ -116,14 +245,22 @@ namespace CS386_Project.Controllers
 
             Server.Sessions.Add(session);
 
-            var privateKey = Guid.NewGuid().ToString();
-            Server.AcceptNewClient(privateKey, session.SessionId);
+            var client = new Client()
+            {
+                ClientId = Guid.NewGuid(),
+                SessionId = session.SessionId,
+                Name = DisplayName,
+                StreamingTo = true
+            };
+
+            session.Clients.Add(client);
 
             return Json(new
             {
                 StatusCode = 200,
-                Message = "created session with id: " + session.SessionId,
-                PrivateKey = privateKey
+                Message = "created session",
+                SessionId = session.SessionId,
+                ClientId = client.ClientId
             });
         }
 
@@ -149,6 +286,48 @@ namespace CS386_Project.Controllers
             return Json(new
             {
                 Sessions = _sessionList
+            });
+        }
+
+        [HttpPost]
+        public JsonResult GetSongList(string sessionId)
+        {
+            if (!Guid.TryParse(sessionId, out Guid sessionGuid))
+            {
+                return Json(new
+                {
+                    Status = 500,
+                    Message = "invalid value for parameter 'sessionId' (unable to parse)"
+                });
+            }
+
+            foreach (var session in Server.Sessions)
+            {
+                if (session.SessionId == sessionGuid)
+                {
+                    return Json(new
+                    {
+                        Status = 200,
+                        Songs = session.Queue.Songs
+                    });
+                }
+            }
+
+            return Json(new
+            {
+                Status = 500,
+                Message = "no session with that id"
+            });
+        }
+
+        [HttpPost]
+        public JsonResult NotifyDonePlaying(string sessionId, string songId)
+        {
+            //todo
+            return Json(new
+            {
+                Status = 500,
+                Message = "TODO"
             });
         }
     }

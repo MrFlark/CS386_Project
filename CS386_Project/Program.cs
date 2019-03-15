@@ -17,9 +17,6 @@ namespace CS386_Project
         public static void Main(string[] args)
         {
             BuildWebHost(args).Run();
-            new Thread(t => {
-                Server.StartServer();
-            }).Start();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

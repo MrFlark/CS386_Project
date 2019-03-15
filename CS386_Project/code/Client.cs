@@ -7,8 +7,6 @@ namespace CS386_Project.code
     {
         public Guid ClientId { get; set; }
         public bool StreamingTo { get; set; }
-        public string InetAddress { get; set; }
-        public TcpClient ClientRef { get; set; }
         public string Name { get; set; }
         public Guid SessionId { get; set; }
     }
