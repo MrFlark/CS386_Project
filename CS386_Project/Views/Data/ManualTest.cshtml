@@ -2,7 +2,7 @@
     ViewData["Title"] = "ManualTest";
 }
 
-<h2>ManualTest</h2>
+<h2>CS386ProjectDemo</h2>
 
 <style>
     body, textarea {
@@ -18,26 +18,32 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-
-<!--create session-->
+<a id="btn1">Create Session</a>
+<br />
+<br />
+/Data/CreateSession response (json)
 <textarea rows="10" cols="50" id="rq0"></textarea>
 
-<a id="btn1">test</a>
+<br />
 
-<!--OR-->
-<!--join session-->
+Sessions List:
 <textarea rows="10" cols="50" id="rq1"></textarea>
 
-song URL:
-<textarea rows="1" cols="65" id="rq2"></textarea>
-<a id="btn2">queue song</a>
 <br />
+
+Song URL:
+<textarea rows="1" cols="65" id="rq2"></textarea>
+<a id="btn2">Queue Song</a>
+<br />
+<br />
+/Data/QueueSong response (json)
 <textarea rows="10" cols="65" id="rq4"></textarea>
 <br />
 
-songs List:
+Songs List:
 <textarea rows="10" cols="50" id="rq3"></textarea>
-
+<br />
+<div id="loading_indicator" style="font-weight:800;font-size:22px; display:none;" dots="3">buffering...</div>
 <audio id="audio_tag" controls>
     <source id="audio_source" src="_" type="audio/mpeg">
 </audio>
@@ -49,7 +55,7 @@ songs List:
 
     function getNextSong() {
         $.ajax({
-            url: "http://localhost:4614/Data/GetSongList",
+            url: "http://josephsirna.org:81/Data/GetSongList",
             type: 'post',
             data: {
                 'sessionId': sessionId
@@ -59,10 +65,32 @@ songs List:
                 if (songs.length > 0) {
                     var songId = songs[0].id;
 
-                    $("#audio_source").attr('src', 'http://localhost:4614/Data/GetSong?SongId=' + songId);
+                    $("#audio_source").attr('src', 'http://josephsirna.org:81/Data/GetSong?SongId=' + songId);
+
+                    $("#loading_indicator").show();
+                    setInterval(function () {
+                        var e = $("#loading_indicator");
+                        var dots = e.attr('dots');
+                        if (dots == '1') {
+                            e.attr('dots', '2');
+                            e.html("buffering..");
+                        } else if (dots == '2') {
+                            e.attr('dots', '3');
+                            e.html("buffering...");
+                        } else {
+                            e.attr('dots', '1');
+                            e.html("buffering.");
+                        }
+                    }, 500);
 
                     var audio_tag = document.getElementById('audio_tag');
+
                     audio_tag.load();
+
+                    audio_tag.addEventListener('canplaythrough', function () {
+                        $("#loading_indicator").hide();
+                    }, false);
+
                     audio_tag.play();
                 }
             },
@@ -74,7 +102,7 @@ songs List:
 
     function getSongList() {
         $.ajax({
-            url: "http://localhost:4614/Data/GetSongList",
+            url: "http://josephsirna.org:81/Data/GetSongList",
             type: 'post',
             data: {
                 'sessionId': sessionId
@@ -92,7 +120,7 @@ songs List:
 
     function getSessionList() {
         $.ajax({
-            url: "http://localhost:4614/Data/GetSessionList",
+            url: "http://josephsirna.org:81/Data/GetSessionList",
             type: 'post',
             success: function (r) {
                 $("#rq1").val(JSON.stringify(r, null, 2));
@@ -111,7 +139,7 @@ songs List:
     $("#btn2").click(function () {
         var url = $("#rq2").val();
         $.ajax({
-            url: "http://localhost:4614/Data/QueueSong",
+            url: "http://josephsirna.org:81/Data/QueueSong",
             data: {
                 'clientId': clientId,
                 'source': 'youtube',
@@ -131,7 +159,7 @@ songs List:
 
     $("#btn1").click(function () {
         $.ajax({
-            url: "http://localhost:4614/Data/CreateSession",
+            url: "http://josephsirna.org:81/Data/CreateSession",
             data: rq0,
             type: "post",
             success: function (r) {
@@ -151,14 +179,4 @@ songs List:
         });
 
     });
-
-
-
-    var rq1 = {
-
-    };
-
-    var rq2 = {};
-
-    var rq3 = {};
 </script>
