@@ -15,10 +15,16 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="code\ResponseModels\" />
+    <Content Remove="Views\Home\Contact.cshtml" />
+    <Content Remove="Views\Home\About.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="code\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="code\YoutubeDemo.cs" />
+    <Compile Remove="code\ResponseModels\ClientHandshakeResponse.cs" />
   </ItemGroup>
 </Project>
