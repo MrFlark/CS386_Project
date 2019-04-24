@@ -52,7 +52,7 @@ namespace CS386_Project.code
             }
         }
 
-        public bool DownloadSong(Song song)
+        public static bool DownloadSong(Song song)
         {
 
             var filepath = GetMP3FromURL(song.Location.URL);
