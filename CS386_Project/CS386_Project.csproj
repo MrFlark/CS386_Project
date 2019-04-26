@@ -19,6 +19,7 @@
   <ItemGroup>
     <Content Remove="Views\Home\Contact.cshtml" />
     <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="Views\Shared\Error.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="code\" />

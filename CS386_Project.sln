@@ -1,7 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "CS386_Project", "CS386_Project\CS386_Project.csproj", "{A66EE983-9C4C-4BDF-A3FE-5125914B005C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS386_Project", "CS386_Project\CS386_Project.csproj", "{A66EE983-9C4C-4BDF-A3FE-5125914B005C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS386_UnitTests", "CS386_UnitTests\CS386_UnitTests.csproj", "{1EF3D37D-953E-42BD-80A9-1256819DBE6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +15,9 @@ Global
 		{A66EE983-9C4C-4BDF-A3FE-5125914B005C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A66EE983-9C4C-4BDF-A3FE-5125914B005C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A66EE983-9C4C-4BDF-A3FE-5125914B005C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EF3D37D-953E-42BD-80A9-1256819DBE6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EF3D37D-953E-42BD-80A9-1256819DBE6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EF3D37D-953E-42BD-80A9-1256819DBE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EF3D37D-953E-42BD-80A9-1256819DBE6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
