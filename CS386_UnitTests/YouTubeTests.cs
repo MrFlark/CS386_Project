@@ -14,7 +14,7 @@ namespace CS386_UnitTests
             {
                 Location = new Location
                 {
-                    URL = ""
+                    URL = "https://www.youtube.com/watch?v=Mv9Qd_xCIyo"
                 },
                 Source = Source.YouTube,
                 Id = Guid.NewGuid(),
