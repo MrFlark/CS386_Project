@@ -55,7 +55,7 @@ Songs List:
 
     function getNextSong() {
         $.ajax({
-            url: "http://josephsirna.org:81/Data/GetSongList",
+            url: "http://josephsirna.org:81/dev/Data/GetSongList",
             type: 'post',
             data: {
                 'sessionId': sessionId
@@ -65,7 +65,7 @@ Songs List:
                 if (songs.length > 0) {
                     var songId = songs[0].id;
 
-                    $("#audio_source").attr('src', 'http://josephsirna.org:81/Data/GetSong?SongId=' + songId);
+                    $("#audio_source").attr('src', 'http://josephsirna.org:81/dev/Data/GetSong?SongId=' + songId);
 
                     $("#loading_indicator").show();
                     setInterval(function () {
@@ -102,7 +102,7 @@ Songs List:
 
     function getSongList() {
         $.ajax({
-            url: "http://josephsirna.org:81/Data/GetSongList",
+            url: "http://josephsirna.org:81/dev/Data/GetSongList",
             type: 'post',
             data: {
                 'sessionId': sessionId
@@ -120,7 +120,7 @@ Songs List:
 
     function getSessionList() {
         $.ajax({
-            url: "http://josephsirna.org:81/Data/GetSessionList",
+            url: "http://josephsirna.org:81/dev/Data/GetSessionList",
             type: 'post',
             success: function (r) {
                 $("#rq1").val(JSON.stringify(r, null, 2));
@@ -139,7 +139,7 @@ Songs List:
     $("#btn2").click(function () {
         var url = $("#rq2").val();
         $.ajax({
-            url: "http://josephsirna.org:81/Data/QueueSong",
+            url: "http://josephsirna.org:81/dev/Data/QueueSong",
             data: {
                 'clientId': clientId,
                 'source': 'youtube',
@@ -159,7 +159,7 @@ Songs List:
 
     $("#btn1").click(function () {
         $.ajax({
-            url: "http://josephsirna.org:81/Data/CreateSession",
+            url: "http://josephsirna.org:81/dev/Data/CreateSession",
             data: rq0,
             type: "post",
             success: function (r) {

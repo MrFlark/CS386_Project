@@ -285,6 +285,7 @@ namespace CS386_Project.Controllers
 
             return Json(new
             {
+                StatusCode = 200,
                 Sessions = _sessionList
             });
         }
